@@ -13,7 +13,17 @@ app.use(bodyParser.json());
 const dbConnect = require("./database");
 dbConnect();
 
-const userRoutes = require("./routes/userRoutes");
+// add db models as a middleware and make it available to all routes
+const models = require("./models");
+app.use((req, res, next) => {
+  req.context = {
+    models,
+  };
+  // console.log(req.context);
+  next();
+});
+
+const { userRoutes, authRoutes } = require("./routes");
 
 app.use(bodyParser.json());
 app.get("/", (req, res) => {
@@ -21,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -13,17 +13,6 @@ module.exports = {
     }
   },
 
-  list: async (req, res) => {
-    try {
-      let users = await User.find().select("name email updated created");
-      res.json(users);
-    } catch (error) {
-      return res.status(400).json({
-        error,
-      });
-    }
-  },
-
   createUser: (req, res) => {
     // res.send("New User Signup Route!");
     User.findOne({ email: req.body.email }, (error, user) => {
@@ -64,43 +53,5 @@ module.exports = {
           });
         });
     });
-  },
-
-  create: async (req, res) => {
-    try {
-      const existingUser = await User.findOne({ email: req.body.email });
-      if (existingUser) {
-        return res.status(400).send({
-          message: "User Already Exists!",
-          existingUser,
-        });
-      }
-    } catch (error) {
-      return res.status(400).json({
-        error,
-      });
-    }
-
-    let hashedPassword = bcrypt.hashSync(req.body.password, 10);
-
-    // const newUser = new User({
-    //   email: req.body.email,
-    //   password: hashedPassword,
-    // });
-
-    try {
-      const newUser = await User.create({
-        email: req.body.email,
-        password: hashedPassword,
-      });
-      return res.status(200).json({
-        message: "Successfully signed up!",
-        newUser,
-      });
-    } catch (error) {
-      return res.status(400).json({
-        error,
-      });
-    }
   },
 };
