@@ -18,9 +18,10 @@ module.exports = {
         email: req.body.email,
       });
       if (existingUser) {
+        const { id, email } = existingUser;
         return res.status(400).send({
           message: "User Already Exists!",
-          existingUser,
+          user: { id, email },
         });
       }
     } catch (error) {
